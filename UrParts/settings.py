@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Project Apps
     "parts",
+    "scraper",
 ]
 
 MIDDLEWARE = [

@@ -31,8 +31,7 @@ schema_urls = [
 
 
 v1_urls = [
-    path("", include("post.v1.urls")),
-    path("access_req/", include("access.v1.urls")),
+    # path("", include("parts.v1.urls")),
 ]
 urlpatterns = [
     # Admin URLs
