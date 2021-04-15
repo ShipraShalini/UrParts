@@ -20,3 +20,7 @@ class Part(models.Model):
                 name="unique_part_entry",
             )
         ]
+
+    def __str__(self):
+        """Return Return string representation of the model."""
+        return f"{self.manufacturer}|{self.model}|{self.part}"
