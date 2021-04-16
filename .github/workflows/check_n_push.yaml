@@ -38,13 +38,27 @@ jobs:
       - name: Install dependencies
         run: pip install flake8 black isort -r requirements.txt
 
-      - name: Run migrations
-        run: python manage.py migrate
-
       - name: Lint
         run: black --check . && isort --check . && flake8 .
 
+      - name: Check migrations
+        env:
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_NAME: ci_db_test
+          DB_HOST: localhost
+          DB_PORT: 5432
+          SECRET_KEY: fefwefgrsgagwegf2352
+        run: python manage.py migrate
+
       - name: Run tests
+        env:
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_NAME: ci_db_test
+          DB_HOST: localhost
+          DB_PORT: 5432
+          SECRET_KEY: fefwefgrsgagwegf2352
         run: python manage.py test
 
       - name: Set up Docker Buildx
