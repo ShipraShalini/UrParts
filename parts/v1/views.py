@@ -32,10 +32,9 @@ class PartListView(ListAPIView):
         return params
 
 
-@extend_schema_view(
-    retrieve=extend_schema(description="Testing the description extend_schema_view")
-)
+@extend_schema_view(retrieve=extend_schema(description="Testing the description"))
 class PartDetailView(RetrieveAPIView):
+    queryset = Part.objects.all()
     lookup_field = "uuid"
     lookup_url_kwarg = "part_id"
     serializer_class = PartSerializer
