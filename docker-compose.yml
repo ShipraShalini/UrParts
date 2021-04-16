@@ -1,0 +1,32 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgress
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+#      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    environment:
+      - DB_NAME=urparts
+      - DB_USER=django
+      - DB_PASSWORD=fky#we6hbj@5tfg23^gfw2g!j
+      - DB_HOST=db
+      - DB_PORT=5432
+      - SECRET_KEY=oolx&#0ty125q%(q6dy5@!7jj+o7+x14c0&+-2dn2tthlz30
+      - DEBUG=True
+      - ALLOWED_HOSTS='*'
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:

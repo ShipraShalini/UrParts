@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Dict
 from urllib.parse import quote
 
 from django.views.defaults import page_not_found, permission_denied
@@ -28,7 +29,7 @@ def get_exception_message(exception):
 class ExceptionHandler:
     """Exception handler for the API requests."""
 
-    def get_ip(self, headers):
+    def get_ip(self, headers: Dict):
         """Get IP from the request headers."""
         return headers.get("HTTP_X_FORWARDED_FOR") or headers.get("REMOTE_ADDR")
 

@@ -5,7 +5,7 @@ class PartSpider(scrapy.Spider):
     name = "part"
     start_urls = ["https://www.urparts.com/index.cfm/page/catalogue"]
 
-    def _get_absolute_url(self, rel_url):
+    def _get_absolute_url(self, rel_url: str):
         return f"https://www.urparts.com/{rel_url}"
 
     def parse(self, response, **kwargs):

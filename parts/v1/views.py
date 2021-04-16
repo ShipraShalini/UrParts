@@ -1,9 +1,8 @@
-import uuid
+from typing import Dict
 
-from rest_framework.exceptions import NotFound, ValidationError
-from rest_framework.generics import ListAPIView
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema, extend_schema_view
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from parts.constants import PART_MODEL_FIELDS
 from parts.models import Part
@@ -12,16 +11,19 @@ from UrParts.paginators import CustomPageNumberPagination
 
 
 class PartListView(ListAPIView):
+    """Return a list of Parts."""
+
     serializer_class = PartSerializer
     pagination_class = CustomPageNumberPagination
     valid_query_params = ["page_size", "page", *PART_MODEL_FIELDS]
 
     def get_queryset(self):
-        query_params = self._sanitise_params(self.request)
+        """Returns queryset filtered based on the query params."""
+        query_params = self._sanitise_params(self.request.GET.dict())
         return Part.objects.filter(**query_params)
 
-    def _sanitise_params(self, request):
-        params = request.GET.dict()
+    def _sanitise_params(self, params: Dict):
+        """Check if the params are valid. Removes pagination params."""
         for key in params.keys():
             if key not in self.valid_query_params:
                 raise ValidationError("At lease one query param is invalid.")
@@ -30,19 +32,10 @@ class PartListView(ListAPIView):
         return params
 
 
-class PartDetailView(APIView):
-    def get(self, request, part_id, *args, **kwargs):
-        part_id = self._validate_uuid(part_id)
-        part = Part.objects.filter(id=part_id).first()
-        if not part:
-            raise NotFound(f"Part with uuid {part_id} not found.")
-        return Response(PartSerializer(part).data)
-
-    def _validate_uuid(self, uuid_str):
-        """Check if the string is a valid uuid."""
-        if isinstance(uuid_str, uuid.UUID):
-            return uuid_str
-        try:
-            return uuid.UUID(uuid_str, version=4)
-        except (TypeError, AttributeError, ValueError):
-            raise ValidationError("Invalid part_id.")
+@extend_schema_view(
+    retrieve=extend_schema(description="Testing the description extend_schema_view")
+)
+class PartDetailView(RetrieveAPIView):
+    lookup_field = "uuid"
+    lookup_url_kwarg = "part_id"
+    serializer_class = PartSerializer
